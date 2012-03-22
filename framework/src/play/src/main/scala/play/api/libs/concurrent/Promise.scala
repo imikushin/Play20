@@ -100,7 +100,7 @@ trait Redeemable[-A] {
 
 object STMPromise {
 
-  val invoker = play.core.Invoker.promiseInvoker
+  def invoker = play.core.Invoker.promiseInvoker
 
   class PromiseInvoker extends Actor {
 

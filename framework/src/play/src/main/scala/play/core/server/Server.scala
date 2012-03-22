@@ -39,7 +39,7 @@ trait Server {
     mode = mode)
 
   // Start the main Invoker
-  val invoker = Invoker(applicationProvider)
+  lazy val invoker = Invoker(applicationProvider)
 
   // store the invoker in a global variable
   Invoker.init(invoker)

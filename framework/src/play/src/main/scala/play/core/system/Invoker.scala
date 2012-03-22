@@ -82,12 +82,13 @@ object Invoker {
 
   private var invokerOption: Option[Invoker] = None
 
-  private def invoker = invokerOption.getOrElse({
+  private def invoker = {
+    invokerOption.getOrElse({
     val default = new Invoker()
     invokerOption = Some(default)
     default
-  })
-
+    })
+  }
   def system = invoker.system
 
   def promiseInvoker = invoker.promiseInvoker

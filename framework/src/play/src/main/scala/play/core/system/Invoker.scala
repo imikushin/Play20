@@ -14,10 +14,20 @@ import play.api.http.HeaderNames._
 
 import play.utils._
 
+/**
+ * holds Play's internal invokers
+ */
 class Invoker(val system: ActorSystem) {
 
+  /**
+   * creates Invoker 
+   * @param applicationProvider applicationProvider for this invoker
+   */
   def this(applicationProvider: ApplicationProvider) = this(Invoker.appProviderActorSystem(applicationProvider))
 
+  /**
+   * creates Invoker using the default Actor system
+   */
   def this() = this(Invoker.defaultActorSystem())
 
   val promiseInvoker = {
@@ -28,7 +38,10 @@ class Invoker(val system: ActorSystem) {
     system.actorOf(Props[ActionInvoker].withDispatcher("akka.actor.actions-dispatcher").withRouter(RoundRobinRouter(100)), name = "actions")
   }
 
-  def stop() {
+  /**
+   * kills actor system
+   */
+  def stop(): Unit = {
     system.shutdown()
   }
 }
@@ -52,18 +65,18 @@ object Invoker {
     ActorSystem("play", conf.getConfig("play"))
   }
 
-  def apply() = new Invoker()
+  def apply(): Invoker = new Invoker()
 
-  def apply(applicationProvider: ApplicationProvider) = new Invoker(applicationProvider)
+  def apply(applicationProvider: ApplicationProvider): Invoker = new Invoker(applicationProvider)
 
   // Call init to register an Actor System, otherwise a default ActorSystem will be created.
-  def init(invoker: Invoker) {
+  def init(invoker: Invoker): Unit = {
     if (invokerOption.isDefined)
       throw new IllegalStateException("Invoker was initialized twice without an intervening uninit; two Server created at once?")
     invokerOption = Some(invoker)
   }
 
-  def uninit() {
+  def uninit(): Unit = {
     invokerOption = None
   }
 
